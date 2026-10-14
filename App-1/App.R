@@ -1,51 +1,182 @@
 library(shiny)
 library(bslib)
+library(bsicons)
 
-# Define UI for app that draws a histogram ----
+# # Define UI for app that draws a histogram ----
+# ui <- page_sidebar(
+#   title = "My Shiny App",
+#   sidebar = sidebar("Shiny is available on CRAN, so you can install it in the usual way from your R console:",
+#                     code('install.packages("shiny")')
+#                     ),
+#   card(
+#     card_header("Introducing Shiny"),
+#     "Shiny is a package from Posit that makes it incredibly easy to build interactive web applications with R. For an introduction and live examples, visit the Shiny homepage (https://shiny.posit.co).",
+#     card_image("https://shiny.posit.co/r/getstarted/shiny-basics/lesson2/images/my-shiny-app.png", height = "300px"),
+#     card_footer("Shiny is a product of Posit")
+#   )
+# )
+# # ui <- page_fluid(
+# #   layout_sidebar(
+# #     sidebar = sidebar("Sidebar"),
+# #     "Main contents"
+# #   )   
+# # )
+# 
+# # ui <- page_sidebar(
+# #   title = "title panel",
+# #   sidebar = sidebar("Sidebar"),
+# #   value_box(
+# #     title = "Value box",
+# #     value = 100,
+# #     showcase = bsicons::bs_icon("bar-chart"),
+# #     theme = "teal"
+# #   ),
+# #   card("Card"),
+# #   card("Another card")
+# # )
+# 
+# # Define server logic required to draw a histogram ----
+# server <- function(input, output) {
+#   
+#   
+# }
+# 
+# 
+# 
+# # See above for the definitions of ui and server
+# 
+# shinyApp(ui = ui, server = server)
+
+
+#-----------
+
+
+# Define UI ----
+# #Examples of all widgets
+# ui <- page_fluid(
+#   titlePanel("Basic widgets"),
+#   layout_columns(
+#     col_width = 3,
+#     card(
+#       card_header("Buttons"),
+#       actionButton("action", "Action"),
+#       submitButton("Submit")
+#     ),
+#     card(
+#       card_header("Single checkbox"),
+#       checkboxInput("checkbox", "Choice A", value = TRUE)
+#     ),
+#     card(
+#       card_header("Checkbox group"),
+#       checkboxGroupInput(
+#         "checkGroup",
+#         "Select all that apply",
+#         choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3),
+#         selected = 1
+#       )
+#     ),
+#     card(
+#       card_header("Date input"),
+#       dateInput("date", "Select date", value = "2014-01-01")
+#     ),
+#     card(
+#       card_header("Date range input"),
+#       dateRangeInput("dates", "Select dates")
+#     ),
+#     card(
+#       card_header("File input"),
+#       fileInput("file", label = NULL)
+#     ),
+#     card(
+#       card_header("Help text"),
+#       helpText(
+#         "Note: help text isn't a true widget,",
+#         "but it provides an easy way to add text to",
+#         "accompany other widgets."
+#       )
+#     ),
+#     card(
+#       card_header("Numeric input"),
+#       numericInput("num", "Input number", value = 1)
+#     ),
+#     card(
+#       card_header("Radio buttons"),
+#       radioButtons(
+#         "radio",
+#         "Select option",
+#         choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3),
+#         selected = 1
+#       )
+#     ),
+#     card(
+#       card_header("Select box"),
+#       selectInput(
+#         "select",
+#         "Select option",
+#         choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3),
+#         selected = 1
+#       )
+#     ),
+#     card(
+#       card_header("Sliders"),
+#       sliderInput(
+#         "slider1",
+#         "Set value",
+#         min = 0,
+#         max = 100,
+#         value = 50
+#       ),
+#       sliderInput(
+#         "slider2",
+#         "Set value range",
+#         min = 0,
+#         max = 100,
+#         value = c(25, 75)
+#       )
+#     ),
+#     card(
+#       card_header("Text input"),
+#       textInput("text", label = NULL, value = "Enter text...")
+#     )
+#   )
+# )
+# 
+# # Define server logic ----
+# server <- function(input, output) {
+#   
+# }
+# 
+# # Run the app ----
+# shinyApp(ui = ui, server = server)
+
+#----------
+ 
 ui <- page_sidebar(
-  # App title ----
-  title = "Hello World!",
-  # Sidebar panel for inputs ----
-  sidebar = sidebar(
-    # Input: Slider for the number of bins ----
-    sliderInput(
-      inputId = "bins",
-      label = "Number of bins:",
-      min = 5,
-      max = 50,
-      value = 30
-    )
-  ),
-  # Output: Histogram ----
-  plotOutput(outputId = "distPlot")
-)
-
-# Define server logic required to draw a histogram ----
-server <- function(input, output) {
+  sidebar = sidebar("Create demographic maps with information from the 2010 US Census",
+                    selectInput(
+                      "select",
+                      "Choose a variable to display",
+                      choices = list("Percent White" = "white", 
+                                     "Percent Black" = "black",
+                                     "Precent Hispanic" = "hispanic",
+                                     "Percent Asian" = "asian"),
+                      selected = 1
+                    ),
+                    sliderInput(
+                      "slider1",
+                      "Range of interest:",
+                      min = 0,
+                      max = 100,
+                      value = c(0, 100)
+                    )
+                    )
   
-  # Histogram of the Old Faithful Geyser Data ----
-  # with requested number of bins
-  # This expression that generates a histogram is wrapped in a call
-  # to renderPlot to indicate that:
-  #
-  # 1. It is "reactive" and therefore should be automatically
-  #    re-executed when inputs (input$bins) change
-  # 2. Its output type is a plot
-  output$distPlot <- renderPlot({
-    
-    x    <- faithful$waiting
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    
-    hist(x, breaks = bins, col = "#007bc2", border = "orange",
-         xlab = "Waiting time to next eruption (in mins)",
-         main = "Histogram of waiting times")
-    
-  })
+  
+)
+# Define server logic ----
+server <- function(input, output) {
   
 }
 
-
-
-# See above for the definitions of ui and server
-
+# Run the app ----
 shinyApp(ui = ui, server = server)
